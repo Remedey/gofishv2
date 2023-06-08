@@ -44,6 +44,7 @@ public class MainApp extends Application {
 
     Label CurrentPlayerLabel;
     TextFlow joinedTextFlow = null;
+    Button DoAction;
     // This is our PrimaryStage (It contains everything)
     private Stage primaryStage;
     // This is the BorderPane of RootLayout
@@ -60,7 +61,6 @@ public class MainApp extends Application {
     private ArrayList<Label> TargetsLabels = new ArrayList<>();
     @SuppressWarnings("FieldMayBeFinal")
     private ArrayList<Label> playerInfoLabels = new ArrayList<>();
-
     private Button gofishbtn;
     private String playerSelectedRank = "";
     private ImageView selectedImageRank = null;
@@ -72,10 +72,7 @@ public class MainApp extends Application {
     private TextFlow chatLayout;
     private String theme_clicked;
     private ArrayList<ImageView> targetImages = new ArrayList<>();
-
     private VBox targetButtonsGroup;
-
-    Button DoAction;
 
     @Override
     public void start(Stage primaryStage) {
@@ -160,7 +157,7 @@ public class MainApp extends Application {
         primaryStage.show();
     }
 
-    private void showNextAbout(){
+    private void showNextAbout() {
         URL backURL = Objects.requireNonNull(MainApp.class.getResource("about_exit.png"));
         Image backImage = new Image(backURL.toString());
         ImageView backImageView = new ImageView(backImage);
@@ -197,7 +194,7 @@ public class MainApp extends Application {
         HBox buttonContainer = new HBox(10); // Spacing between image and buttons
         buttonContainer.setTranslateY(295);
         buttonContainer.setAlignment(Pos.CENTER);
-        buttonContainer.getChildren().addAll(backButton,nextButton);
+        buttonContainer.getChildren().addAll(backButton, nextButton);
 
 
         // Create a VBox to stack the image and buttons vertically
@@ -220,10 +217,11 @@ public class MainApp extends Application {
         primaryStage.show();
 
     }
+
     private void showaboutMenu() {
         URL backURL = Objects.requireNonNull(MainApp.class.getResource("about_exit.png"));
         Image backImage = new Image(backURL.toString());
-                ImageView backImageView = new ImageView(backImage);
+        ImageView backImageView = new ImageView(backImage);
         backImageView.setFitWidth(90);  // Set the desired width of the image
         backImageView.setFitHeight(90);  // Set the desired height of the image
 
@@ -252,13 +250,11 @@ public class MainApp extends Application {
             showNextAbout();
         });
 
-
         // Create a VBox to stack the image and buttons horizontally
         HBox buttonContainer = new HBox(10); // Spacing between image and buttons
         buttonContainer.setTranslateY(295);
         buttonContainer.setAlignment(Pos.CENTER);
-        buttonContainer.getChildren().addAll(backButton,nextButton);
-
+        buttonContainer.getChildren().addAll(backButton, nextButton);
 
         // Create a VBox to stack the image and buttons vertically
         HBox mainMenuLayout = new HBox(10); // Spacing between image and buttons
@@ -521,8 +517,6 @@ public class MainApp extends Application {
             showMainMenu();
         });
 
-
-
         URL url = Objects.requireNonNull(MainApp.class.getResource("/io/github/p0lbang/gofish/" + theme + "_pack/" + "A_S" + ".png"));
         Image cardImage = new Image(url.toString());
         ImageView imageView = new ImageView(cardImage);
@@ -534,11 +528,6 @@ public class MainApp extends Application {
         ImageView imageView2 = new ImageView(bgimage);
         imageView2.setFitWidth(200);
         imageView2.setFitHeight(150);
-
-
-
-
-
 
         String buttonStyle = "-fx-background-color: #007bff; " +
                 "-fx-text-fill: #ffffff; " +
@@ -597,8 +586,6 @@ public class MainApp extends Application {
 
         Scene scene = new Scene(themeMenuLayout, WINDOW_WIDTH, WINDOW_HEIGHT);
         primaryStage.setScene(scene);
-
-
     }
 
     private void resetThemeSelectionPage() {
@@ -655,7 +642,6 @@ public class MainApp extends Application {
     public void displayCurrentPlayer() {
         CurrentPlayerLabel.setText(CurrentPlayersTurnName);
     }
-
 
     public void displayPlayerDeck(String[] Deck) {
         rootLayout.getChildren().removeAll(playerDeckImageViews);
@@ -776,19 +762,14 @@ public class MainApp extends Application {
 
         CurrentPlayerLabel = new Label(CurrentPlayersTurnName);
 
-
         container.getChildren().addAll(box, new HBox(textField, button), new Label("Current Player:"), CurrentPlayerLabel);
 
-
-        if (theme == "default"){
+        if (theme == "default") {
             container.setStyle("-fx-background-color: #6e593f;");
-
         } else if (theme == "animal") {
             container.setStyle("-fx-background-color: #228B22;");
-        }
-        else{
+        } else {
             container.setStyle("-fx-background-color: #800020;");
-
         }
 
         // On Enter press
@@ -843,10 +824,6 @@ public class MainApp extends Application {
                     "-fx-border-radius: 20;";
             hoverStyle = "-fx-background-color: #B22222;"; // Lighter hover color
         }
-
-
-
-
 
         DoAction.setStyle(buttonStyle);
         DoAction.setOnMouseEntered(e -> DoAction.setStyle(buttonStyle + hoverStyle));
@@ -917,7 +894,6 @@ public class MainApp extends Application {
         for (int i = 0; i < ranklen; i++) {
             String target = targetplayers.get(i);
             int handCount = NetworkClient.gameHandler.PlayerMap.get(target).getHandCount();
-
 
             // Create label for target player
             String lbltext = target
