@@ -75,6 +75,8 @@ public class MainApp extends Application {
 
     private VBox targetButtonsGroup;
 
+    Button DoAction;
+
     @Override
     public void start(Stage primaryStage) {
         // 1) Declare a primary stage (Everything will be on this stage)
@@ -142,7 +144,7 @@ public class MainApp extends Application {
         // Create a VBox to stack the image and buttons vertically
         VBox mainMenuLayout = new VBox(10); // Spacing between image and buttons
         mainMenuLayout.setAlignment(Pos.CENTER);
-        mainMenuLayout.getChildren().addAll(imageView, multiplayerButton,themeButton,aboutButton,exitButton);
+        mainMenuLayout.getChildren().addAll(imageView, multiplayerButton, themeButton, aboutButton, exitButton);
 
 
         BackgroundSize backgroundSize = new BackgroundSize(1.0, 1.0, true, true, false, false);
@@ -288,9 +290,6 @@ public class MainApp extends Application {
         button.setPrefSize(80, 30);
         VBox box = new VBox();
         box.getChildren().addAll(sp, joinedTextFlow);
-
-        VBox.setVgrow(sp, Priority.ALWAYS);
-        VBox.setVgrow(joinedTextFlow, Priority.ALWAYS);
 
         VBox vb = new VBox();
         vb.getChildren().addAll(joinedTextFlow);
@@ -571,7 +570,7 @@ public class MainApp extends Application {
         fruitThemeButton.setOnMouseExited(e -> fruitThemeButton.setStyle(buttonStyle));
 
         HBox themeContainer = new HBox(10);
-        themeContainer.getChildren().addAll(imageView,imageView2);
+        themeContainer.getChildren().addAll(imageView, imageView2);
         themeContainer.setAlignment(Pos.CENTER);
 
         HBox buttonContainer = new HBox(10);
@@ -579,13 +578,13 @@ public class MainApp extends Application {
         buttonContainer.setAlignment(Pos.CENTER);
 
         HBox buttonContainer2 = new HBox(10);
-        buttonContainer2.getChildren().addAll(okButton,backButton);
+        buttonContainer2.getChildren().addAll(okButton, backButton);
         buttonContainer2.setAlignment(Pos.CENTER);
 
 
         VBox themeMenuLayout = new VBox(20);
         themeMenuLayout.setAlignment(Pos.CENTER);
-        themeMenuLayout.getChildren().addAll(themeContainer,buttonContainer,buttonContainer2);
+        themeMenuLayout.getChildren().addAll(themeContainer, buttonContainer, buttonContainer2);
 
 
         URL url3 = Objects.requireNonNull(MainApp.class.getResource("main_menu_bg.png"));
@@ -618,8 +617,8 @@ public class MainApp extends Application {
     public void displayTargetsSelectionButtons(ArrayList<String> Targets) {
         rootLayout.getChildren().removeAll(targetButtonsGroup);
         targetButtonsGroup = new VBox();
-
         HBox targetButtons = new HBox();
+        HBox outer = new HBox();
 
         int targetsize = Targets.size();
         for (int i = 0; i < targetsize; i++) {
@@ -630,12 +629,12 @@ public class MainApp extends Application {
             targetButtons.getChildren().add(temp);
         }
 
-        targetButtonsGroup.setTranslateX(rootLayout.getWidth() / 2);
+        targetButtonsGroup.setTranslateX(rootLayout.getWidth() / 2 - targetButtons.getWidth());
         targetButtonsGroup.setTranslateY(rootLayout.getHeight() / 2 + 60);
 
         Label targetslbl = new Label("Targets");
-        targetslbl.setTextFill(Color.WHITE);
         targetButtonsGroup.getChildren().addAll(targetslbl, targetButtons);
+        targetslbl.setTextFill(Color.WHITE);
 
         rootLayout.getChildren().addAll(targetButtonsGroup);
     }
@@ -654,12 +653,7 @@ public class MainApp extends Application {
     }
 
     public void displayCurrentPlayer() {
-        rootLayout.getChildren().removeAll(CurrentPlayerLabel);
-        CurrentPlayerLabel = new Label("Current Player's Turn: " + CurrentPlayersTurnName);
-        CurrentPlayerLabel.setTranslateX(-300);
-        CurrentPlayerLabel.setTranslateY(0);
-        CurrentPlayerLabel.setTextFill(Color.WHITE);
-        rootLayout.getChildren().addAll(CurrentPlayerLabel);
+        CurrentPlayerLabel.setText(CurrentPlayersTurnName);
     }
 
 
@@ -709,7 +703,6 @@ public class MainApp extends Application {
             imageView.setStyle("-fx-border-color: red; -fx-border-width: 5px;");
             rootLayout.getChildren().add(imageView);
             playerDeckImageViews.add(imageView);
-            //fix: move info labels
         }
     }
 
@@ -780,7 +773,11 @@ public class MainApp extends Application {
         VBox box = new VBox();
         box.getChildren().addAll(sp, chatLayout);
         container.setPadding(new Insets(10));
-        container.getChildren().addAll(box, new HBox(textField, button));
+
+        CurrentPlayerLabel = new Label(CurrentPlayersTurnName);
+
+
+        container.getChildren().addAll(box, new HBox(textField, button), new Label("Current Player:"), CurrentPlayerLabel);
 
 
         if (theme == "default"){
@@ -793,10 +790,6 @@ public class MainApp extends Application {
             container.setStyle("-fx-background-color: #800020;");
 
         }
-
-
-        VBox.setVgrow(sp, Priority.ALWAYS);
-        VBox.setVgrow(chatLayout, Priority.ALWAYS);
 
         // On Enter press
         textField.setOnKeyPressed(e -> {
@@ -814,12 +807,68 @@ public class MainApp extends Application {
         VBox vb = new VBox();
         vb.getChildren().addAll(chatLayout);
         sp.setVmax(440);
-        sp.setPrefSize(200, 700);
+        sp.setPrefSize(200, 300);
         sp.setContent(vb);
         sp.vvalueProperty().bind(vb.heightProperty());
         sp.setPannable(true);
         mainLayout.setLeft(container);
+    }
 
+    public void displayActionButton() {
+        DoAction = new Button("Do Action");
+
+        String hoverStyle;
+
+        String buttonStyle;
+
+        if (theme.equals("animal")) {
+            buttonStyle = "-fx-background-color: #228B22; " +
+                    "-fx-text-fill: #ffffff; " +
+                    "-fx-background-radius: 20; " +
+                    "-fx-border-width: 2px;" +
+                    "-fx-border-radius: 20;";
+            hoverStyle = "-fx-background-color: #7CFC00;"; // Lighter hover color
+        } else if (theme.equals("default")) {
+            buttonStyle = "-fx-background-color: #6e593f; " +
+                    "-fx-text-fill: #ffffff; " +
+                    "-fx-background-radius: 20; " +
+                    "-fx-border-width: 2px;" +
+                    "-fx-border-radius: 20;";
+            hoverStyle = "-fx-background-color: #8B4513;"; // Lighter hover color
+        } else {
+            buttonStyle = "-fx-background-color: #800020; " +
+                    "-fx-text-fill: #ffffff; " +
+                    "-fx-background-radius: 20; " +
+                    "-fx-border-width: 2px;" +
+                    "-fx-border-radius: 20;";
+            hoverStyle = "-fx-background-color: #B22222;"; // Lighter hover color
+        }
+
+
+
+
+
+        DoAction.setStyle(buttonStyle);
+        DoAction.setOnMouseEntered(e -> DoAction.setStyle(buttonStyle + hoverStyle));
+        DoAction.setOnMouseExited(e -> DoAction.setStyle(buttonStyle));
+
+        rootLayout.getChildren().add(DoAction);
+        DoAction.setTranslateY(rootLayout.getHeight() / 2 - 20);
+        DoAction.setOnAction(evt -> Platform.runLater(() -> {
+            if (CurrentPlayersTurnID != NetworkClient.gameHandler.getSelf().getID()) {
+                System.out.println("not your turn");
+                return;
+            }
+            if (playerSelectedTarget.isBlank() || playerSelectedTarget.isEmpty() || playerSelectedRank.isBlank() || playerSelectedRank.isEmpty()) {
+                System.out.println("please select a target and rank");
+                return;
+            }
+
+            NetworkClient.checkPlayerCard(NetworkClient.gameHandler.getSelf(), NetworkClient.gameHandler.PlayerMap.get(playerSelectedTarget), playerSelectedRank);
+            selectedImageRank = null;
+            playerSelectedRank = "";
+            playerSelectedTarget = "";
+        }));
     }
 
     // Initializes the root layout.
@@ -828,93 +877,9 @@ public class MainApp extends Application {
             rootLayout.getChildren().removeAll(rootLayout.getChildren());
             mainLayout.setCenter(rootLayout);
 
-            Button DoAction = new Button("Do Action");
-            String hoverStyle;
+            displayActionButton();
 
-            String buttonStyle;
-
-            if (theme.equals("animal")) {
-                buttonStyle = "-fx-background-color: #228B22; " +
-                        "-fx-text-fill: #ffffff; " +
-                        "-fx-background-radius: 20; " +
-                        "-fx-border-width: 2px;" +
-                        "-fx-border-radius: 20;";
-                hoverStyle = "-fx-background-color: #7CFC00;"; // Lighter hover color
-            } else if (theme.equals("default")) {
-                buttonStyle = "-fx-background-color: #6e593f; " +
-                        "-fx-text-fill: #ffffff; " +
-                        "-fx-background-radius: 20; " +
-                        "-fx-border-width: 2px;" +
-                        "-fx-border-radius: 20;";
-                hoverStyle = "-fx-background-color: #8B4513;"; // Lighter hover color
-            } else {
-                buttonStyle = "-fx-background-color: #800020; " +
-                        "-fx-text-fill: #ffffff; " +
-                        "-fx-background-radius: 20; " +
-                        "-fx-border-width: 2px;" +
-                        "-fx-border-radius: 20;";
-                hoverStyle = "-fx-background-color: #B22222;"; // Lighter hover color
-            }
-
-
-
-
-
-            DoAction.setStyle(buttonStyle);
-            DoAction.setOnMouseEntered(e -> DoAction.setStyle(buttonStyle + hoverStyle));
-            DoAction.setOnMouseExited(e -> DoAction.setStyle(buttonStyle));
-            rootLayout.getChildren().add(DoAction);
-            DoAction.setTranslateY(rootLayout.getHeight() / 2 - 20);
-            DoAction.setOnAction(evt -> Platform.runLater(() -> {
-                if (CurrentPlayersTurnID != NetworkClient.gameHandler.getSelf().getID()) {
-                    System.out.println("not your turn");
-                    return;
-                }
-                if (playerSelectedTarget.isBlank() || playerSelectedTarget.isEmpty() || playerSelectedRank.isBlank() || playerSelectedRank.isEmpty()) {
-                    System.out.println("please select a target and rank");
-                    return;
-                }
-                NetworkClient.checkPlayerCard(NetworkClient.gameHandler.getSelf(), NetworkClient.gameHandler.PlayerMap.get(playerSelectedTarget), playerSelectedRank);
-                selectedImageRank = null;
-                playerSelectedRank = "";
-                playerSelectedTarget = "";
-            }));
-
-            if (NetworkServer != null) {
-                Button StartGame = new Button("Start Game");
-
-                StartGame.setStyle(buttonStyle);
-                StartGame.setOnMouseEntered(e -> StartGame.setStyle(buttonStyle + hoverStyle));
-                StartGame.setOnMouseExited(e -> StartGame.setStyle(buttonStyle));
-
-                rootLayout.getChildren().add(StartGame);
-                StartGame.setTranslateY(100);
-                StartGame.setOnAction(evt -> {
-                    NetworkServer.GUI_startGame();
-                    rootLayout.getChildren().remove(StartGame);
-                });
-            }
-
-
-//            this.updateUI();
-
-            //Background Image
-            URL url = Objects.requireNonNull(MainApp.class.getResource("/io/github/p0lbang/gofish/" + theme + "_pack/background.png"));
-            Image backgroundImage = new Image(url.toString());
-
-            BackgroundSize backgroundSize = new BackgroundSize(1.0, 1.0, true, true, false, false);
-            BackgroundImage backgroundImageObject = new BackgroundImage(backgroundImage, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, backgroundSize);
-            Background background = new Background(backgroundImageObject);
-            rootLayout.setBackground(background);
-            /////////////////////////////////////////////////////////////
-            // Second, show the scene containing the root layout.
-            initChatmenu();
-            Scene scene = new Scene(mainLayout, WINDOW_WIDTH, WINDOW_HEIGHT);
-            primaryStage.setScene(scene); // Set the scene in primary stage.
-            primaryStage.setResizable(false);
-
-            // Third, show the primary stage
-            primaryStage.show(); // Display the primary stage
+            primaryStage.show();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -923,12 +888,13 @@ public class MainApp extends Application {
     public void updateUI() {
         Platform.runLater(() -> {
             //display the player's deck
-            displayPlayerDeck(NetworkClient.gameHandler.getSelf().getHand());
             ArrayList<String> targets = new ArrayList<>(NetworkClient.gameHandler.PlayerMap.keySet());
             displayTargetsSelectionButtons(targets);
             displayTargets(targets);
             displaySelected();
             displayCurrentPlayer();
+            displayActionButton();
+            displayPlayerDeck(NetworkClient.gameHandler.getSelf().getHand());
         });
     }
 
@@ -992,16 +958,16 @@ public class MainApp extends Application {
         String lbltext = "Selected Rank: " + this.playerSelectedRank + " | "
                 + "Selected Target: " + this.playerSelectedTarget;
         Label temp = new Label(lbltext);
-        temp.setTranslateX(-300);
-        temp.setTranslateY(initialY);
+        temp.setTranslateY(rootLayout.getHeight() / 2 - 75);
+        temp.setStyle("-fx-background-color: gray;");
         temp.setTextFill(Color.WHITE);
         this.playerInfoLabels.add(temp);
 
         lbltext = NetworkClient.gameHandler.getSelf().getHandCount() + " cards | "
                 + NetworkClient.gameHandler.getSelf().getCompletedSuits() + " suites completed";
         temp = new Label(lbltext);
-        temp.setTranslateX(-300);
-        temp.setTranslateY(initialY + 25);
+        temp.setTranslateY(rootLayout.getHeight() / 2 - 50);
+        temp.setStyle("-fx-background-color: gray;");
         temp.setTextFill(Color.WHITE);
         this.playerInfoLabels.add(temp);
 
